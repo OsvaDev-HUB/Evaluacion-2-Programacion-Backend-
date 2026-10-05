@@ -1,0 +1,322 @@
+[
+  {
+    "id": 1,
+    "nombre": "Martillo carpintero 16 oz",
+    "categoria": "Herramientas manuales",
+    "precio": 12990,
+    "stock": 18,
+    "descripcion": "Martillo de acero con mango antideslizante para trabajos de carpintería y reparaciones domésticas."
+  },
+  {
+    "id": 2,
+    "nombre": "Set de destornilladores 6 piezas",
+    "categoria": "Herramientas manuales",
+    "precio": 8990,
+    "stock": 25,
+    "descripcion": "Juego de destornilladores planos y Phillips con puntas magnéticas y mangos ergonómicos."
+  },
+  {
+    "id": 3,
+    "nombre": "Alicate universal 8 pulgadas",
+    "categoria": "Herramientas manuales",
+    "precio": 7990,
+    "stock": 14,
+    "descripcion": "Alicate de acero al carbono para sujetar, doblar y cortar cables de uso general."
+  },
+  {
+    "id": 4,
+    "nombre": "Llave ajustable 10 pulgadas",
+    "categoria": "Herramientas manuales",
+    "precio": 10990,
+    "stock": 0,
+    "descripcion": "Llave cromada con apertura regulable para tuercas y conexiones de distintos tamaños."
+  },
+  {
+    "id": 5,
+    "nombre": "Huincha de medir 5 metros",
+    "categoria": "Herramientas manuales",
+    "precio": 4990,
+    "stock": 32,
+    "descripcion": "Cinta métrica retráctil con freno, carcasa resistente y gancho reforzado."
+  },
+  {
+    "id": 6,
+    "nombre": "Taladro percutor 650 W",
+    "categoria": "Herramientas eléctricas",
+    "precio": 59990,
+    "stock": 9,
+    "descripcion": "Taladro de velocidad variable con función percutora para madera, metal y albañilería."
+  },
+  {
+    "id": 7,
+    "nombre": "Esmeril angular 4 1/2 pulgadas",
+    "categoria": "Herramientas eléctricas",
+    "precio": 44990,
+    "stock": 0,
+    "descripcion": "Esmeril compacto de 750 W para corte, desbaste y pulido de metales."
+  },
+  {
+    "id": 8,
+    "nombre": "Sierra circular 7 1/4 pulgadas",
+    "categoria": "Herramientas eléctricas",
+    "precio": 79990,
+    "stock": 6,
+    "descripcion": "Sierra de 1400 W con ajuste de profundidad y guía para cortes rectos."
+  },
+  {
+    "id": 9,
+    "nombre": "Atornillador inalámbrico 12 V",
+    "categoria": "Herramientas eléctricas",
+    "precio": 69990,
+    "stock": 11,
+    "descripcion": "Atornillador recargable con batería de litio, luz LED y control de torque."
+  },
+  {
+    "id": 10,
+    "nombre": "Lijadora orbital 220 W",
+    "categoria": "Herramientas eléctricas",
+    "precio": 54990,
+    "stock": 7,
+    "descripcion": "Lijadora liviana con sistema de aspiración para terminaciones uniformes en madera."
+  },
+  {
+    "id": 11,
+    "nombre": "Caja de tornillos para madera",
+    "categoria": "Fijaciones",
+    "precio": 5490,
+    "stock": 40,
+    "descripcion": "Caja de 100 tornillos zincados de 6 x 1 1/2 pulgadas para madera."
+  },
+  {
+    "id": 12,
+    "nombre": "Tarugos de nylon 8 mm",
+    "categoria": "Fijaciones",
+    "precio": 1990,
+    "stock": 70,
+    "descripcion": "Paquete de 25 tarugos expansibles para fijaciones livianas en muros sólidos."
+  },
+  {
+    "id": 13,
+    "nombre": "Clavos de 2 pulgadas 1 kg",
+    "categoria": "Fijaciones",
+    "precio": 3490,
+    "stock": 45,
+    "descripcion": "Clavos de acero para trabajos generales de construcción y carpintería."
+  },
+  {
+    "id": 14,
+    "nombre": "Pernos hexagonales 1/4 pulgada",
+    "categoria": "Fijaciones",
+    "precio": 4990,
+    "stock": 0,
+    "descripcion": "Paquete de 20 pernos zincados con tuerca y golilla para uniones resistentes."
+  },
+  {
+    "id": 15,
+    "nombre": "Abrazaderas metálicas surtidas",
+    "categoria": "Fijaciones",
+    "precio": 3990,
+    "stock": 30,
+    "descripcion": "Juego de abrazaderas ajustables para asegurar mangueras y tuberías."
+  },
+  {
+    "id": 16,
+    "nombre": "Látex interior blanco 1 galón",
+    "categoria": "Pinturas",
+    "precio": 24990,
+    "stock": 16,
+    "descripcion": "Pintura al agua de terminación mate, bajo olor y buen poder cubridor."
+  },
+  {
+    "id": 17,
+    "nombre": "Esmalte sintético negro 1/4 galón",
+    "categoria": "Pinturas",
+    "precio": 10990,
+    "stock": 12,
+    "descripcion": "Esmalte brillante para proteger y decorar superficies de madera y metal."
+  },
+  {
+    "id": 18,
+    "nombre": "Rodillo para pintar 18 cm",
+    "categoria": "Pinturas",
+    "precio": 6990,
+    "stock": 28,
+    "descripcion": "Rodillo de pelo medio con mango reutilizable para muros lisos y rugosos."
+  },
+  {
+    "id": 19,
+    "nombre": "Brocha multipropósito 2 1/2 pulgadas",
+    "categoria": "Pinturas",
+    "precio": 3990,
+    "stock": 0,
+    "descripcion": "Brocha de filamentos mixtos para pinturas al agua y esmaltes."
+  },
+  {
+    "id": 20,
+    "nombre": "Cinta de enmascarar 36 mm",
+    "categoria": "Pinturas",
+    "precio": 2490,
+    "stock": 55,
+    "descripcion": "Cinta de papel de 40 metros para proteger bordes durante trabajos de pintura."
+  },
+  {
+    "id": 21,
+    "nombre": "Cable eléctrico 1,5 mm 25 metros",
+    "categoria": "Electricidad",
+    "precio": 18990,
+    "stock": 20,
+    "descripcion": "Rollo de cable flexible para circuitos domiciliarios de iluminación."
+  },
+  {
+    "id": 22,
+    "nombre": "Enchufe triple volante",
+    "categoria": "Electricidad",
+    "precio": 6490,
+    "stock": 17,
+    "descripcion": "Enchufe de tres posiciones con conexión a tierra para uso interior."
+  },
+  {
+    "id": 23,
+    "nombre": "Interruptor simple embutido",
+    "categoria": "Electricidad",
+    "precio": 2990,
+    "stock": 33,
+    "descripcion": "Interruptor de 10 amperes con placa blanca para instalaciones domiciliarias."
+  },
+  {
+    "id": 24,
+    "nombre": "Ampolleta LED 12 W luz fría",
+    "categoria": "Electricidad",
+    "precio": 4990,
+    "stock": 0,
+    "descripcion": "Ampolleta de bajo consumo con base E27 y luminosidad equivalente a 100 W."
+  },
+  {
+    "id": 25,
+    "nombre": "Alargador eléctrico 5 metros",
+    "categoria": "Electricidad",
+    "precio": 12990,
+    "stock": 15,
+    "descripcion": "Extensión de tres tomas con conexión a tierra y cable reforzado."
+  },
+  {
+    "id": 26,
+    "nombre": "Llave de paso PVC 25 mm",
+    "categoria": "Gasfitería",
+    "precio": 5990,
+    "stock": 13,
+    "descripcion": "Válvula de bola para controlar el paso de agua en tuberías de PVC."
+  },
+  {
+    "id": 27,
+    "nombre": "Sifón para lavaplatos",
+    "categoria": "Gasfitería",
+    "precio": 7990,
+    "stock": 10,
+    "descripcion": "Sifón flexible universal con salida de 40 mm para lavaplatos."
+  },
+  {
+    "id": 28,
+    "nombre": "Cinta de teflón 12 metros",
+    "categoria": "Gasfitería",
+    "precio": 1290,
+    "stock": 62,
+    "descripcion": "Cinta selladora para uniones roscadas de agua, aire y gas."
+  },
+  {
+    "id": 29,
+    "nombre": "Flexible para agua 40 cm",
+    "categoria": "Gasfitería",
+    "precio": 3490,
+    "stock": 0,
+    "descripcion": "Conector flexible trenzado para lavamanos, estanques y grifería."
+  },
+  {
+    "id": 30,
+    "nombre": "Adhesivo para PVC 240 cc",
+    "categoria": "Gasfitería",
+    "precio": 4490,
+    "stock": 22,
+    "descripcion": "Adhesivo de secado rápido para uniones de tuberías y fittings de PVC."
+  },
+  {
+    "id": 31,
+    "nombre": "Cemento especial 25 kg",
+    "categoria": "Construcción",
+    "precio": 8990,
+    "stock": 35,
+    "descripcion": "Cemento para reparaciones, radieres y trabajos generales de albañilería."
+  },
+  {
+    "id": 32,
+    "nombre": "Yeso construcción 20 kg",
+    "categoria": "Construcción",
+    "precio": 5990,
+    "stock": 18,
+    "descripcion": "Yeso en polvo para terminaciones interiores, reparaciones y molduras."
+  },
+  {
+    "id": 33,
+    "nombre": "Silicona transparente 300 ml",
+    "categoria": "Construcción",
+    "precio": 4990,
+    "stock": 24,
+    "descripcion": "Sellador de silicona resistente a la humedad para baños, cocinas y ventanas."
+  },
+  {
+    "id": 34,
+    "nombre": "Espuma expansiva 500 ml",
+    "categoria": "Construcción",
+    "precio": 9990,
+    "stock": 0,
+    "descripcion": "Espuma de poliuretano para rellenar, aislar y sellar cavidades."
+  },
+  {
+    "id": 35,
+    "nombre": "Malla electrosoldada 1 x 2 metros",
+    "categoria": "Construcción",
+    "precio": 29990,
+    "stock": 8,
+    "descripcion": "Panel de acero electrosoldado para refuerzo de radieres y estructuras livianas."
+  },
+  {
+    "id": 36,
+    "nombre": "Guantes de cabritilla",
+    "categoria": "Seguridad",
+    "precio": 5990,
+    "stock": 26,
+    "descripcion": "Guantes resistentes y flexibles para manipulación de herramientas y materiales."
+  },
+  {
+    "id": 37,
+    "nombre": "Lentes de seguridad transparentes",
+    "categoria": "Seguridad",
+    "precio": 4490,
+    "stock": 38,
+    "descripcion": "Protección ocular liviana con cobertura lateral y filtro ultravioleta."
+  },
+  {
+    "id": 38,
+    "nombre": "Casco de seguridad amarillo",
+    "categoria": "Seguridad",
+    "precio": 7990,
+    "stock": 19,
+    "descripcion": "Casco ajustable para proteger la cabeza frente a impactos en zonas de trabajo."
+  },
+  {
+    "id": 39,
+    "nombre": "Respirador reutilizable con filtros",
+    "categoria": "Seguridad",
+    "precio": 14990,
+    "stock": 0,
+    "descripcion": "Protección respiratoria para polvo y partículas durante trabajos de lijado y corte."
+  },
+  {
+    "id": 40,
+    "nombre": "Protector auditivo tipo copa",
+    "categoria": "Seguridad",
+    "precio": 9990,
+    "stock": 21,
+    "descripcion": "Protector acolchado y regulable para reducir el ruido de herramientas eléctricas."
+  }
+]
