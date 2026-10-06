@@ -1,9 +1,7 @@
-import json
 import secrets
 import unicodedata
 from functools import wraps
 
-from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -19,18 +17,14 @@ from django.utils.http import url_has_allowed_host_and_scheme
 from django.views.decorators.http import require_POST
 
 from .forms import PedidoForm, ProductoForm, RegistroForm
-from .storage import editar_tienda, leer_tienda, ruta_tienda
+from .models import Producto
+from .storage import editar_tienda, leer_tienda
 from .templatetags.tienda import ilustracion
-
-RUTA_DATOS = settings.BASE_DIR / "data" / "catalogo.json"
 
 
 def cargar_productos():
-    """Los datos del catálogo se cargan desde JSON en la vista, como pide ES1."""
-    if ruta_tienda().exists():
-        return leer_tienda()["productos"]
-    with RUTA_DATOS.open(encoding="utf-8") as archivo:
-        return json.load(archivo)
+    # Los productos se leen desde la base de datos usando el ORM
+    return list(Producto.objects.order_by("id").values())
 
 
 def buscar_producto(productos, producto_id):
