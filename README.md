@@ -17,11 +17,12 @@ En esta etapa los productos dejan de estar en un archivo JSON. Ahora se guardan 
 
 ## Novedades de la ES2
 
-- Modelo `Producto` con los campos `nombre`, `categoria`, `precio`, `stock` y `descripcion`, y método `__str__`.
+- Modelo `Producto` con los campos `nombre`, `categoria`, `precio`, `stock` y `descripcion`, más `foto` e `ilustracion` opcionales, y método `__str__`.
 - Conexión a SQLite configurada en `config/settings.py`.
 - Modelo registrado en `/admin` con columnas (`list_display`), buscador (`search_fields`) y filtro por categoría (`list_filter`).
 - Poblamiento inicial de 40 productos generado con IA en `catalogo/fixtures/productos.json`.
 - El catálogo lee los productos desde la base de datos con `Producto.objects.order_by("id").values()`.
+- La gestión de la tienda (`/gestion/`) y las compras también crean, editan y descuentan stock directamente en la base de datos.
 - Registro del uso de IA en `uso_ia.md`.
 
 ## Funcionalidades del sitio
@@ -70,7 +71,7 @@ El comando `loaddata productos` carga los 40 productos de la fixture en la base 
 
 | Tipo de cuenta | Usuario | Contraseña | Dónde ingresa |
 | --- | --- | --- | --- |
-| Superusuario (Django Admin) | `superadmin` | `COMPLETAR` | <http://127.0.0.1:8000/admin/> |
+| Superusuario (Django Admin) | `superadmin` | `SuperAdminTornillo2026!` | <http://127.0.0.1:8000/admin/> |
 | Administrador de la tienda | `admin` | `AdminTornillo2026!` | <http://127.0.0.1:8000/cuenta/ingresar/> |
 | Cliente | `cliente` | `ClienteTornillo2026!` | <http://127.0.0.1:8000/cuenta/ingresar/> |
 
@@ -83,8 +84,10 @@ Las cuentas de la tienda (`admin` y `cliente`) vienen de la ES1 y están guardad
 - `/producto/<id>/`: detalle de un producto.
 - `/admin/`: Django Admin para crear, editar y eliminar productos.
 - `/carrito/`: carrito de compras.
-- `/cuenta/ingresar/`: ingreso de clientes.
+- `/cuenta/ingresar/`: ingreso de clientes y del administrador de la tienda.
 - `/cuenta/registro/`: registro de clientes.
+- `/gestion/`: gestión de productos y stock para el administrador de la tienda.
+- `/gestion/pedidos/`: pedidos registrados.
 
 ## Archivos principales
 
@@ -92,7 +95,10 @@ Las cuentas de la tienda (`admin` y `cliente`) vienen de la ES1 y están guardad
 - `catalogo/admin.py`: configuración del modelo en Django Admin.
 - `catalogo/fixtures/productos.json`: poblamiento inicial de 40 productos.
 - `catalogo/migrations/`: migraciones del modelo.
-- `catalogo/views.py`: vistas y consulta de productos con el ORM.
+- `catalogo/views.py`: vistas y consultas de productos con el ORM.
+- `catalogo/backends.py`: login de la tienda (`data/usuarios.json`) y login de superusuarios para `/admin`.
+- `catalogo/tests.py`: pruebas automáticas del sitio.
+- `data/usuarios.json`: cuentas de la tienda.
 - `catalogo/templates/`: templates del sitio.
 - `catalogo/static/catalogo/`: estilos, JavaScript e imágenes.
 - `config/settings.py`: configuración del proyecto y de la base de datos.
@@ -104,6 +110,7 @@ Con el entorno virtual activado:
 
 ```bash
 python manage.py check
+python manage.py test
 ```
 
 Las compras son solo una demostración académica: no se realizan pagos ni envíos reales.

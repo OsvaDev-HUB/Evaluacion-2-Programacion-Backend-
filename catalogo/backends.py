@@ -70,3 +70,11 @@ class UsuariosJSONBackend(ModelBackend):
         for campo, valor in self.atributos(registro).items():
             setattr(usuario, campo, valor)
         return usuario
+
+
+class SuperusuarioBackend(ModelBackend):
+    """Login normal de Django, pero solo para superusuarios (los de createsuperuser)."""
+
+    def user_can_authenticate(self, user):
+        # Las cuentas de la tienda siguen entrando solo con usuarios.json
+        return super().user_can_authenticate(user) and user.is_superuser

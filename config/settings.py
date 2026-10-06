@@ -132,14 +132,14 @@ LOGIN_REDIRECT_URL = 'catalogo:lista'
 LOGOUT_REDIRECT_URL = 'catalogo:lista'
 LOGIN_URL = 'login'
 
-# Cambios y pedidos locales: el JSON original de la evaluación se conserva.
+# Pedidos de demostración (los productos están en la base de datos).
 TIENDA_DATOS = BASE_DIR / 'data' / 'tienda.local.json'
 
 # Única fuente de credenciales y roles del login de la tienda.
 USUARIOS_DATOS = BASE_DIR / 'data' / 'usuarios.json'
 AUTHENTICATION_BACKENDS = [
-    # Login normal de Django, para el superusuario del /admin
-    'django.contrib.auth.backends.ModelBackend',
     # Login de la tienda de la ES1 (usuarios.json)
     'catalogo.backends.UsuariosJSONBackend',
+    # Login de Django solo para superusuarios, para entrar a /admin
+    'catalogo.backends.SuperusuarioBackend',
 ]

@@ -1,4 +1,4 @@
-"""Persistencia local de la demostración; conserva intacto el catálogo inicial."""
+"""Archivo JSON local donde se guardan los pedidos de demostración."""
 
 import json
 import os
@@ -18,12 +18,12 @@ def ruta_tienda():
 
 
 def leer_tienda():
+    # Solo guarda los pedidos de demostración; los productos están en la base de datos
     ruta = ruta_tienda()
     if ruta.exists():
-        return json.loads(ruta.read_text(encoding="utf-8"))
-    with (settings.BASE_DIR / "data" / "catalogo.json").open(encoding="utf-8") as archivo:
-        productos = json.load(archivo)
-    return {"productos": productos, "pedidos": [], "siguiente_id": max(p["id"] for p in productos) + 1}
+        datos = json.loads(ruta.read_text(encoding="utf-8"))
+        return {"pedidos": datos.get("pedidos", [])}
+    return {"pedidos": []}
 
 
 @contextmanager

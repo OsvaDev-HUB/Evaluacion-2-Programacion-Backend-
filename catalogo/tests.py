@@ -1,19 +1,21 @@
-import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from django.contrib.auth import get_user_model
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, SimpleTestCase, TestCase, override_settings
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 
+from .models import Producto
+from .storage import leer_tienda
 from .views import cargar_productos
-from .storage import editar_tienda, leer_tienda
 from .usuarios import agregar_usuario, buscar_usuario, cargar_usuarios, editar_usuarios
 
 
 class CatalogoAisladoMixin:
-    """Aísla las pruebas también cuando ya existen cambios locales del usuario."""
+    """Carga la fixture de productos y aísla los archivos JSON de usuarios y pedidos."""
+
+    fixtures = ["productos"]
 
     def setUp(self):
         super().setUp()
@@ -30,14 +32,13 @@ class CatalogoAisladoMixin:
         )
         configuracion.enable()
         self.addCleanup(configuracion.disable)
-        if isinstance(self, TestCase):
-            with editar_usuarios() as datos:
-                for usuario in get_user_model().objects.all():
-                    agregar_usuario(datos, usuario, "Clave-prueba-432!")
+        with editar_usuarios() as datos:
+            for usuario in get_user_model().objects.all():
+                agregar_usuario(datos, usuario, "Clave-prueba-432!")
 
 
-class DatosCatalogoTests(CatalogoAisladoMixin, SimpleTestCase):
-    def test_json_contiene_los_40_productos_de_ferreteria(self):
+class DatosCatalogoTests(CatalogoAisladoMixin, TestCase):
+    def test_base_de_datos_contiene_los_40_productos_de_ferreteria(self):
         productos = cargar_productos()
 
         self.assertEqual(len(productos), 40)
@@ -48,7 +49,7 @@ class DatosCatalogoTests(CatalogoAisladoMixin, SimpleTestCase):
             self.assertTrue(campos_requeridos.issubset(producto))
 
 
-class InicioTests(CatalogoAisladoMixin, SimpleTestCase):
+class InicioTests(CatalogoAisladoMixin, TestCase):
     def test_portada_presenta_la_tienda_y_enlaza_al_catalogo_separado(self):
         self.assertEqual(reverse("catalogo:inicio"), "/")
         self.assertEqual(reverse("catalogo:lista"), "/catalogo/")
@@ -80,7 +81,7 @@ class InicioTests(CatalogoAisladoMixin, SimpleTestCase):
         self.assertNotContains(response, 'id="como-comprar"')
 
 
-class ListaProductosTests(CatalogoAisladoMixin, SimpleTestCase):
+class ListaProductosTests(CatalogoAisladoMixin, TestCase):
     def test_lista_muestra_todos_los_productos_y_el_resumen(self):
         response = self.client.get(reverse("catalogo:lista"))
 
@@ -97,7 +98,7 @@ class ListaProductosTests(CatalogoAisladoMixin, SimpleTestCase):
         self.assertContains(response, "catalogo/js/catalogo.js")
 
 
-class DetalleProductoTests(CatalogoAisladoMixin, SimpleTestCase):
+class DetalleProductoTests(CatalogoAisladoMixin, TestCase):
     def test_detalle_muestra_un_producto_existente(self):
         response = self.client.get(
             reverse("catalogo:detalle", kwargs={"producto_id": 1})
@@ -210,9 +211,8 @@ class TiendaTests(CatalogoAisladoMixin, TestCase):
     def test_carrito_se_ajusta_si_cambia_stock_o_se_elimina_producto(self):
         self.agregar(cantidad=8)
         self.agregar(producto_id=2)
-        with editar_tienda() as datos:
-            datos["productos"][0]["stock"] = 2
-            datos["productos"] = [p for p in datos["productos"] if p["id"] != 2]
+        Producto.objects.filter(pk=1).update(stock=2)
+        Producto.objects.filter(pk=2).delete()
         response = self.client.get(reverse("catalogo:carrito"))
         self.assertContains(response, "Ajustamos tu carrito")
         self.assertEqual(self.client.session["carrito"], {"1": 2})
@@ -258,7 +258,6 @@ class TiendaTests(CatalogoAisladoMixin, TestCase):
         self.assertEqual(cargar_productos()[0]["stock"], 18)
 
     def test_administrador_crea_edita_stock_elimina_y_no_reutiliza_id(self):
-        original = (Path(__file__).parent.parent / "data/catalogo.json").read_bytes()
         self.client.force_login(self.administrador)
         response = self.client.post(reverse("catalogo:crear_producto"), self.datos_producto)
         self.assertRedirects(response, reverse("catalogo:gestion"))
@@ -275,7 +274,6 @@ class TiendaTests(CatalogoAisladoMixin, TestCase):
         self.assertEqual(len(cargar_productos()), 40)
         self.client.post(reverse("catalogo:crear_producto"), self.datos_producto)
         self.assertGreater(cargar_productos()[-1]["id"], creado["id"])
-        self.assertEqual((Path(__file__).parent.parent / "data/catalogo.json").read_bytes(), original)
 
     def test_admin_valida_precio_stock_y_nombre(self):
         self.client.force_login(self.administrador)
@@ -342,8 +340,7 @@ class TiendaTests(CatalogoAisladoMixin, TestCase):
         self.assertEqual(cargar_productos()[0]["stock"], 18)
 
     def test_segundo_comprador_no_puede_comprar_stock_agotado(self):
-        with editar_tienda() as datos:
-            datos["productos"][0]["stock"] = 1
+        Producto.objects.filter(pk=1).update(stock=1)
         self.client.force_login(self.cliente)
         self.agregar()
         otro_client = Client()
@@ -421,13 +418,21 @@ class CredencialesJSONTests(CatalogoAisladoMixin, TestCase):
             self.assertNotContains(self.client.get(reverse("login")), registro["password"])
         self.assertEqual(self.client.get("/data/usuarios.json").status_code, 404)
 
-    def test_clave_erronea_o_cuenta_solo_en_sqlite_no_permiten_ingresar(self):
+    def test_clave_erronea_o_cuenta_comun_solo_en_sqlite_no_permiten_ingresar(self):
         response = self.ingresar(password="incorrecta")
         self.assertTrue(response.context["form"].errors)
-        get_user_model().objects.create_superuser("solo_sqlite", password="Clave-sqlite-123!")
+        get_user_model().objects.create_user("solo_sqlite", password="Clave-sqlite-123!", is_staff=True)
         response = self.ingresar("solo_sqlite", "Clave-sqlite-123!")
         self.assertTrue(response.context["form"].errors)
         self.assertNotIn("_auth_user_id", self.client.session)
+
+    def test_superusuario_de_sqlite_entra_al_admin_y_ve_productos(self):
+        get_user_model().objects.create_superuser("superadmin", password="Clave-super-123!")
+        response = self.client.post(reverse("admin:login"), {"username": "superadmin", "password": "Clave-super-123!",
+                                                             "next": reverse("admin:index")})
+        self.assertRedirects(response, reverse("admin:index"))
+        response = self.client.get(reverse("admin:catalogo_producto_changelist"))
+        self.assertContains(response, "Martillo carpintero 16 oz")
 
     def test_json_controla_rol_activo_y_revocacion_de_sesion(self):
         self.ingresar()

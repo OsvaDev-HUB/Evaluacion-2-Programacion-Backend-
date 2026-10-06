@@ -7,8 +7,8 @@ from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView
 from django.core.exceptions import PermissionDenied, ValidationError
-from django.core.files.storage import default_storage
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
+from django.db.models import F
 from django.http import Http404, JsonResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -142,7 +142,8 @@ def registro(request):
         except (ValidationError, IntegrityError):
             form.add_error("username", "Ya existe una cuenta con ese nombre de usuario.")
         else:
-            login(request, usuario)
+            # El cliente nuevo queda guardado en usuarios.json, por eso inicia sesión con ese backend
+            login(request, usuario, backend="catalogo.backends.UsuariosJSONBackend")
             messages.success(request, "Tu cuenta está lista. Ya puedes confirmar tu pedido.")
             return redirect(destino_seguro(request))
     return render(request, "registration/registro.html", {"form": form, "next": destino_seguro(request)})
@@ -235,12 +236,12 @@ def checkout(request):
         if request.POST.get("token") != token:
             form.add_error(None, "Esta confirmación expiró. Revisa los datos e inténtalo nuevamente.")
         else:
-            with editar_tienda() as datos:
+            with transaction.atomic(), editar_tienda() as datos:
                 existente = next((p for p in datos["pedidos"] if p["token"] == token and p["usuario_id"] == request.user.pk), None)
                 if existente:
                     pedido = existente
                 else:
-                    actual = detalle_carrito(request, datos["productos"])
+                    actual = detalle_carrito(request)
                     if actual["ajustado"] or not actual["items"]:
                         messages.warning(request, "El stock cambió durante la confirmación. Revisa tu carrito.")
                         return redirect("catalogo:carrito")
@@ -249,8 +250,9 @@ def checkout(request):
                               "items": [{"nombre": i["producto"]["nombre"], "precio": i["producto"]["precio"],
                                          "cantidad": i["cantidad"], "subtotal": i["subtotal"]} for i in actual["items"]],
                               "total": actual["total"]}
+                    # Se descuenta el stock de cada producto en la base de datos
                     for item in actual["items"]:
-                        item["producto"]["stock"] -= item["cantidad"]
+                        Producto.objects.filter(pk=item["producto"]["id"]).update(stock=F("stock") - item["cantidad"])
                     datos["pedidos"].append(pedido)
             request.session["carrito"] = {}
             request.session.pop("pedido_token", None)
@@ -300,44 +302,30 @@ def producto_formulario(request, producto_id=None):
         campos = dict(form.cleaned_data)
         foto = campos.pop("foto")
         quitar_foto = campos.pop("quitar_foto")
-        with editar_tienda() as datos:
-            if producto:
-                actual = buscar_producto(datos["productos"], producto_id)
-                actual.update(campos)
-            else:
-                actual = {"id": datos["siguiente_id"], **campos}
-                datos["productos"].append(actual)
-                datos["siguiente_id"] += 1
-            # Una foto nueva reemplaza a la anterior; también se puede quitar
-            if foto or quitar_foto:
-                borrar_foto(actual.pop("foto", None))
-            if foto:
-                actual["foto"] = guardar_foto(foto, actual["id"])
+        if producto:
+            actual = Producto.objects.get(pk=producto_id)
+            for campo, valor in campos.items():
+                setattr(actual, campo, valor)
+        else:
+            actual = Producto(**campos)
+        # Una foto nueva reemplaza a la anterior; también se puede quitar
+        if foto or quitar_foto:
+            actual.foto.delete(save=False)
+        if foto:
+            actual.foto = foto
+        actual.save()
         messages.success(request, "Producto actualizado." if producto else "Producto creado.")
         return redirect("catalogo:gestion")
     return render(request, "catalogo/producto_formulario.html", {"form": form, "producto": producto, **resumen(productos)})
-
-
-def guardar_foto(archivo, producto_id):
-    """Guarda la foto en media/productos/ y devuelve su ruta para el JSON."""
-    extension = archivo.name.rsplit(".", 1)[-1].lower().replace("jpeg", "jpg")
-    nombre = f"productos/producto-{producto_id}-{secrets.token_hex(4)}.{extension}"
-    return default_storage.save(nombre, archivo)
-
-
-def borrar_foto(ruta):
-    if ruta and default_storage.exists(ruta):
-        default_storage.delete(ruta)
 
 
 @administrador_requerido
 def eliminar_producto(request, producto_id):
     producto = buscar_producto(cargar_productos(), producto_id)
     if request.method == "POST":
-        with editar_tienda() as datos:
-            buscar_producto(datos["productos"], producto_id)
-            datos["productos"] = [p for p in datos["productos"] if p["id"] != producto_id]
-        borrar_foto(producto.get("foto"))
+        actual = Producto.objects.get(pk=producto_id)
+        actual.foto.delete(save=False)
+        actual.delete()
         messages.success(request, "Producto eliminado de la tienda.")
         return redirect("catalogo:gestion")
     return render(request, "catalogo/eliminar_producto.html", {"producto": producto})
