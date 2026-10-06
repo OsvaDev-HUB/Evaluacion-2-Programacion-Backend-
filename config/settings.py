@@ -137,4 +137,9 @@ TIENDA_DATOS = BASE_DIR / 'data' / 'tienda.local.json'
 
 # Única fuente de credenciales y roles del login de la tienda.
 USUARIOS_DATOS = BASE_DIR / 'data' / 'usuarios.json'
-AUTHENTICATION_BACKENDS = ['catalogo.backends.UsuariosJSONBackend']
+AUTHENTICATION_BACKENDS = [
+    # Login normal de Django, para el superusuario del /admin
+    'django.contrib.auth.backends.ModelBackend',
+    # Login de la tienda de la ES1 (usuarios.json)
+    'catalogo.backends.UsuariosJSONBackend',
+]
